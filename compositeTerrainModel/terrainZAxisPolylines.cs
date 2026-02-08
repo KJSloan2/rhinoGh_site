@@ -41,7 +41,8 @@ public class Script_Instance : GH_ScriptInstance
 		ref object a,
 		ref object b,
 		ref object c,
-		ref object d)
+		ref object d,
+		ref object e)
     {
         if (x == null || y == null || z == null || u == null) return;
         if (x.Count != y.Count || x.Count != z.Count || x.Count != u.Count) return;
@@ -61,7 +62,14 @@ public class Script_Instance : GH_ScriptInstance
             .OrderBy(v => v)
             .ToList();
 
-        var polyTree = new DataTree<Polyline>();
+        var uniqueCols = records
+            .Select(r => r.col)
+            .Distinct()
+            .OrderBy(v => v)
+            .ToList();
+
+        var polyTreeY = new DataTree<Polyline>();
+        var polyTreeX = new DataTree<Polyline>();
         var propTree = new DataTree<double>();
 
         for (int r = 0; r < uniqueRows.Count; r++)
@@ -77,7 +85,7 @@ public class Script_Instance : GH_ScriptInstance
             if (rowRecs.Count < 2)
                 continue;
 
-            polyTree.Add(
+            polyTreeX.Add(
                 new Polyline(rowRecs.Select(rr => rr.pt)),
                 path);
 
@@ -85,10 +93,29 @@ public class Script_Instance : GH_ScriptInstance
                 propTree.Add(val, path);
         }
 
+        for (int cIdx = 0; cIdx < uniqueCols.Count; cIdx++)
+        {
+            int colId = uniqueCols[cIdx];
+            var path = new GH_Path(cIdx);
+
+            var colRecs = records
+                .Where(rec => rec.col == colId)
+                .OrderBy(rec => rec.row)
+                .ToList();
+
+            if (colRecs.Count < 2)
+                continue;
+
+            polyTreeY.Add(
+                new Polyline(colRecs.Select(cr => cr.pt)),
+                path);
+        }
+
         a = uniqueRows;
         b = records.Count;
-        c = polyTree;
-        d = propTree;
+        c = polyTreeX;
+        d = polyTreeY;
+        e = propTree;
     }
 
 }
