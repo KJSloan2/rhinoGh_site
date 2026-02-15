@@ -26,27 +26,27 @@ public class Script_Instance : GH_ScriptInstance
   }
 
   private void RunScript(
-		object x,
-		object y,
+		object input_fileName,
+		object runToggle,
 		List<object> zz,
 		List<object> za,
-		ref object a,
-		ref object b,
-		ref object c,
-		ref object d,
-		ref object e,
-		ref object f,
-		ref object g,
-		ref object h,
-		ref object i,
-		ref object j,
-		ref object k,
-		ref object l,
-		ref object m,
-		ref object n,
-		ref object o)
+		ref object out_ptCloud,
+		ref object out_lstfSerc,
+		ref object out_lstfFlag,
+		ref object out_elvRel,
+		ref object out_lstfMean,
+		ref object out_ndviMean,
+		ref object out_ndviFlag,
+		ref object out_ndmiMean,
+		ref object out_idxRow,
+		ref object out_idxCol,
+		ref object out_dd,
+		ref object out_ddElv,
+		ref object out_ddGeoid,
+		ref object out_mcGeoid,
+		ref object out_bbRect)
   {
-    string fileName = x as string;
+    string fileName = input_fileName as string;
     var headerIndex = new Dictionary<string, int>();
 
     double scaleX = 1.0, scaleY = 1.0;
@@ -64,7 +64,7 @@ public class Script_Instance : GH_ScriptInstance
         adjY = Convert.ToDouble(zaList[1], INV);
     };
 
-    bool run = (bool) y;
+    bool run = (bool) runToggle;
 
     var points = new List<Point3d>();
     var pointsTransformed = new List<Point3d>();
@@ -90,11 +90,11 @@ public class Script_Instance : GH_ScriptInstance
     var bbRect = new Rectangle3d();
 
     if (!run || string.IsNullOrEmpty(fileName))
-    { a=points; b=lstf_serc; c=lstf_flag; 
-    d=elv_rel; e=lstf_mean; f=ndvi_mean; 
-    g=ndvi_flag; h=ndmi_mean; i=idx_row; 
-    j=idx_col; k=dom_dir; l=dom_dir_elv;
-    m=dd_geoid; n=mc_geoid; o=bbRect; return; }
+    { out_ptCloud=points; out_lstfSerc=lstf_serc; out_lstfFlag=lstf_flag; 
+    out_elvRel=elv_rel; out_lstfMean=lstf_mean; out_ndviMean=ndvi_mean; 
+    out_ndviFlag=ndvi_flag; out_ndmiMean=ndmi_mean; out_idxRow=idx_row; 
+    out_idxCol=idx_col; out_dd=dom_dir; out_ddElv=dom_dir_elv;
+    out_ddGeoid=dd_geoid; out_mcGeoid=mc_geoid; out_bbRect=bbRect; return; }
     
     string dirPath = @"C:\Users\Kjslo\Documents\local_dev\dll_p\output\aoi_filtered";
 
@@ -103,11 +103,11 @@ public class Script_Instance : GH_ScriptInstance
     if (!File.Exists(fullPath))
     {
       Component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "File not found: " + fullPath);
-      a=points; b=lstf_serc; c=lstf_flag; 
-      d=elv_rel; e=lstf_mean; f=ndvi_mean; 
-      g=ndvi_flag; h=ndmi_mean; i=idx_row; 
-      j=idx_col; k=dom_dir; l=dom_dir_elv; 
-      m=dd_geoid; n=mc_geoid; o=bbRect; return;
+      out_ptCloud=points; out_lstfSerc=lstf_serc; out_lstfFlag=lstf_flag; 
+      out_elvRel=elv_rel; out_lstfMean=lstf_mean; out_ndviMean=ndvi_mean; 
+      out_ndviFlag=ndvi_flag; out_ndmiMean=ndmi_mean; out_idxRow=idx_row; 
+      out_idxCol=idx_col; out_dd=dom_dir; out_ddElv=dom_dir_elv;
+      out_ddGeoid=dd_geoid; out_mcGeoid=mc_geoid; out_bbRect=bbRect; return;
     }
 
     // Toggle if your altitude column is meters
@@ -275,20 +275,20 @@ public class Script_Instance : GH_ScriptInstance
     }
 
     // Outputs
-    a = pointsTransformed;
-    b = lstf_serc;
-    c = lstf_flag;
-    d = elv_rel;
-    e = lstf_mean;
-    f = ndvi_mean;
-    g = ndvi_flag;
-    h = ndmi_mean;
-    i = idx_row;
-    j = idx_col;
-    k = dom_dir;
-    l = dom_dir_elv;
-    m = dd_geoid;
-    n = mc_geoid;
-    o = bbRect;
+    out_ptCloud = pointsTransformed;
+    out_lstfSerc = lstf_serc;
+    out_lstfFlag = lstf_flag;
+    out_elvRel = elv_rel;
+    out_lstfMean = lstf_mean;
+    out_ndviMean = ndvi_mean;
+    out_ndviFlag = ndvi_flag;
+    out_ndmiMean = ndmi_mean;
+    out_idxRow = idx_row;
+    out_idxCol = idx_col;
+    out_dd = dom_dir;
+    out_ddElv = dom_dir_elv;
+    out_ddGeoid = dd_geoid;
+    out_mcGeoid = mc_geoid;
+    out_bbRect = bbRect;
   }
 }
